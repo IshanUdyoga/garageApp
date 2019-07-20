@@ -1,13 +1,21 @@
 import * as React from 'react';
-import {StatusBar, Text, View, StyleSheet,Dimensions,TouchableOpacity,Image,AsyncStorage,ScrollView,FlatList,ImageBackground,TextInput,Keyboard,LayoutAnimation,UIManager } from 'react-native';
+import {StatusBar,ActivityIndicator, Text, View, StyleSheet,Dimensions,TouchableOpacity,Image,AsyncStorage,ScrollView,FlatList,ImageBackground,TextInput,Keyboard,LayoutAnimation,UIManager } from 'react-native';
 
 import Modal from "react-native-modal";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-crop-picker';
+import * as firebase from 'react-native-firebase';
 
 let deviceHeight = Dimensions.get('window').height
 let deviceWidth = Dimensions.get('window').width
+let today = new Date();
+            let time = new Date();
 
+            let TimeType, hour, minutes, seconds, fullTime;
+
+            let dd = today.getDate();
+            let mm = today.getMonth()+1; 
+            let yyyy = today.getFullYear();
 
 
 export default class ImgUpModal extends React.Component {
@@ -17,7 +25,8 @@ export default class ImgUpModal extends React.Component {
     super(props);
 
     this.state={
-        user_input:''
+        user_input:'',
+        isbtnpressed:false
     }
 }
 
@@ -41,9 +50,175 @@ openPicker(val){
 }
 
 
+getTime(){
+
+    if(dd<10) 
+    {
+        dd='0'+dd;
+    } 
+    
+    if(mm<10) 
+    {
+        mm='0'+mm;
+    } 
+
+         today = new Date();
+         time = new Date();
+
+         dd = today.getDate();
+         mm = today.getMonth()+1; 
+         yyyy = today.getFullYear();
+
+        if(dd<10) 
+        {
+            dd='0'+dd;
+        } 
+        
+        if(mm<10) 
+        {
+            mm='0'+mm;
+        } 
+
+        today = yyyy+'.'+mm+'.'+dd;
+
+
+
+hour = time.getHours(); 
+
+if(hour <= 11)
+{
+
+TimeType = 'AM';
+
+}
+else{
+
+TimeType = 'PM';
+
+}
+
+
+if( hour > 12 )
+{
+hour = hour - 12;
+}
+
+if( hour == 0 )
+{
+hour = 12;
+} 
+
+
+minutes = time.getMinutes();
+
+if(minutes < 10)
+{
+minutes = '0' + minutes.toString();
+}
+
+
+seconds = time.getSeconds();
+
+if(seconds < 10)
+{
+seconds = '0' + seconds.toString();
+}
+
+
+fullTime = hour.toString() + ':' + minutes.toString() + ':' + seconds.toString() + ' ' + TimeType.toString();
+
+
+        // this.setState({
+        //     date : today,
+        //     time:fullTime
+
+       
+    return(fullTime)
+  }
+
+
+uploadImageToweb(){
+    const { currentUser } = firebase.auth()
+
+    if(this.props.imagePath === 'asset:/images/img_icons/blank_camera.png' || this.state.user_input === ''){
+        alert('Please Enter Your Details !')
+    }else{
+            this.setState({isbtnpressed:true})
+          
+
+        const sessionId = new Date().getTime();
+        firebase
+        .storage()
+        .ref(`/images/${sessionId}.jpg`)
+        .putFile(this.props.imagePath
+      ).then((suc) => {
+            
+
+                                  firebase.database().ref('users/'+currentUser.uid+'/my_requests').push({
+                                    img_url:suc.downloadURL,
+                                    question:this.state.user_input,
+                                }).then((data)=>{
+                                      firebase.database().ref('all_requests').push({
+                                        img_url:suc.downloadURL,
+                                        question:this.state.user_input,
+                                        user_id:currentUser.uid,
+                                        user_name:this.props.user_name,
+                                        time:this.getTime()
+                                        })
+                                    //this.fetchData()
+                                    alert('Your Request Sent Succesfully !')
+                                    this.clearImage()  
+                                    this.setState({user_input:'',isbtnpressed:false})
+
+                                }).catch((error)=>{
+                                  alert(error)
+                                  this.clearImage()
+                                  this.setState({user_input:'',isbtnpressed:false})
+                                })
+
+                                            
+            
+          })
+          .catch((error) => {
+            this.clearImage()
+            this.setState({user_input:'',isbtnpressed:false})
+            alert(error);
+     
+          }) 
+       
+
+    }
+    
+
+
+  }
+
+
+  clearImage(){
+    this.props._this.setState({imagePath:'asset:/images/img_icons/blank_camera.png'})  
+
+    ImagePicker.clean().then(() => {
+    }).catch(e => {
+    });
+}
+
+
 close(){
     this.props._this.setState({ imgSelect: false })
 }
+
+
+submitBTN(){
+    if(this.state.isbtnpressed){
+      return(<View style={styles.up_btn}>
+      <ActivityIndicator size="small" color="#fff" />
+</View>)
+    }else{
+      return(<TouchableOpacity style={styles.up_btn} onPress={()=>this.uploadImageToweb()}>
+      <Text style={styles.send_txt}>Send</Text>
+</TouchableOpacity>)
+    }
+  }
 
 
   render() {
@@ -78,9 +253,7 @@ close(){
                             />
                         </View>
 
-                        <TouchableOpacity style={styles.up_btn}>
-                        <Text style={styles.send_txt}>Send</Text>
-                        </TouchableOpacity>
+                        {this.submitBTN()}
                 </View>
          
         </View>

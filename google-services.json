@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1098615589810",
+    "firebase_url": "https://garageapp-7b975.firebaseio.com",
+    "project_id": "garageapp-7b975",
+    "storage_bucket": "garageapp-7b975.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098615589810:android:8d28d395b294d9fa",
+        "android_client_info": {
+          "package_name": "com.droidmade.garagecompanyapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098615589810-2oio9gh0p4tj6id80vnge3cf1pv438m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG8tCD2T7DB2cVziODxjFpRayNRKEPAgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1098615589810-2oio9gh0p4tj6id80vnge3cf1pv438m9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098615589810:android:f375f102dba2777c",
+        "android_client_info": {
+          "package_name": "com.lkgarageapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098615589810-2oio9gh0p4tj6id80vnge3cf1pv438m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG8tCD2T7DB2cVziODxjFpRayNRKEPAgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1098615589810-2oio9gh0p4tj6id80vnge3cf1pv438m9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
